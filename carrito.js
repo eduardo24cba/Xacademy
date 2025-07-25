@@ -14,9 +14,10 @@ const productosDelSuper = [
     { nombre: "Jabon", precio: 4, categoria: 'higiene' },
 ]
 
-function insertarProducto(producto, cantidad){
+function insertarProducto(producto, cantidad, precio){
   producto.cantidad = cantidad
   carrito.productos.push(producto)
+  carrito.precioTotal += precio * cantidad
 }
 function existeProducto(producto) {
     //si el producto no existe en el super
@@ -39,17 +40,18 @@ function agregarProducto(productoELegido, cantidad){
       let productoCarrito = carrito.productos.find(
         ({nombre}) => nombre.toLowerCase() === productoELegido.toLowerCase())
       if(productoCarrito){
-              productoCarrito.precio += producto.precio
+              productoCarrito.precio += producto.precio * cantidad
               productoCarrito.cantidad += cantidad
             }
       else{
-        insertarProducto(producto, cantidad)
+        insertarProducto(producto, cantidad, producto.precio)
       }
     }
     else{
       //es el primer producto en el carrito
-      insertarProducto(producto, cantidad)
+      insertarProducto(producto, cantidad, producto.precio)
     }
+  
 }
 
 function eliminarProducto(nombreProducto){
@@ -64,10 +66,12 @@ function eliminarProducto(nombreProducto){
   //el producto no esta en el carrito
   if(existeProducto(producto))return 0
   
+  
   let nuevoCarrito = carrito.productos.filter(({nombre}) => nombre.toLowerCase() !== nombreProducto.toLowerCase())
   //let index = carrito.productos.indexOf(producto)
   carrito.productos = nuevoCarrito
-   
+  //actualizamos el precio total del carrito
+  carrito.precioTotal = carrito.precioTotal - (producto.precio * producto.cantidad) 
 }
 
 function obtenerCategorias(){
@@ -75,14 +79,16 @@ function obtenerCategorias(){
 }
 
 agregarProducto("Fideos", 3)
+console.log(carrito.precioTotal)
 agregarProducto("Queso", 28)
+console.log(carrito.precioTotal)
 agregarProducto("Shampoo", 2)
-console.log("las categorias son", obtenerCategorias())
+
 console.log(carrito.productos)
-eliminarProducto("Shampoo")
-console.log(carrito.productos)
-console.log("las categorias son", obtenerCategorias())
-eliminarProducto("Shampoo")//devuelve 0 porque no existe en el carrito
-console.log("las categorias son", obtenerCategorias())
 eliminarProducto("Queso")
-console.log("las categorias son", obtenerCategorias())
+console.log(carrito.productos)
+eliminarProducto("Shampoo")//devuelve 0 porque no existe en el carrito
+
+console.log(carrito.precioTotal)
+console.log(carrito.productos)
+console.log(carrito.precioTotal)
